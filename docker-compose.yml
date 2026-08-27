@@ -1,0 +1,13 @@
+services:
+  server:
+    build: .
+    ports:
+      - "27015:27015/tcp"
+      - "27015:27015/udp"
+      - "27005:27005/udp"
+    volumes:
+      - ./src/addons:/home/steam/server/garrysmod/addons
+      - ./src/gamemodes/axis:/home/steam/server/garrysmod/gamemodes/axis
+    command: >
+      ./srcds_run -game garrysmod -norestart +ip 0.0.0.0 +maxplayers 16 +map gm_construct +gamemode sandbox
+    restart: unless-stopped
