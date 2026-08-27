@@ -23,16 +23,20 @@ function axis.Include(path)
             AddCSLuaFile(path)
             include(path)
         end
+        print(path .. " loaded")
     else -- CLIENT
         if prefix == "cl_" or prefix == "sh_" then
             include(path)
+            print(path .. " loaded")
+
         end
     end
 end
 
 ---@param dir string
 function axis.IncludeDir(dir)
-    local files, folders = file.Find(dir .. "/*", "LUA")
+    local serachPath = "axis/gamemode/" .. dir
+    local files, folders = file.Find(serachPath .. "/*", "LUA")
 
     for _, f in ipairs(files) do
         if string.sub(f, -4) == ".lua" then

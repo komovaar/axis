@@ -16,6 +16,6 @@ end
 
 ---comment
 ---@return table
-function prop.faction.GetAll()
+function axis.faction.GetAll()
     return prop.faction.stored
 end
