@@ -8,4 +8,4 @@ RUN ./steamcmd.sh +force_install_dir /home/steam/server +login anonymous +app_up
 
 WORKDIR /home/steam/server
 
-CMD ["./srcds_run", "-game", "garrysmod", "+maxplayers", "16", "+map", "gm_construct", "+gamemode", "sandbox", "-norestart"]
+CMD ["./srcds_run_x64", "-game", "garrysmod", "+maxplayers", "16", "+map", "gm_construct", "+gamemode", "sandbox", "-norestart"]

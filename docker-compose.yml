@@ -9,5 +9,5 @@ services:
       - ./src/addons:/home/steam/server/garrysmod/addons
       - ./src/gamemodes/axis:/home/steam/server/garrysmod/gamemodes/axis
     command: >
-      ./srcds_run -game garrysmod -norestart +ip 0.0.0.0 +maxplayers 16 +map gm_construct +gamemode sandbox
+      ./srcds_run_x64 -game garrysmod -norestart +ip 0.0.0.0 +maxplayers 16 +map gm_construct +gamemode axis
     restart: unless-stopped
