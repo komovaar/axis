@@ -5,17 +5,17 @@ axis.faction.stored = axis.faction.stored or {}
 ---@param data table
 function axis.faction.Register(id, data)
     data.id = id
-    prop.faction.stored[id] = data
+    axis.faction.stored[id] = data
 end
 
 ---@param id string
 ---@return table|nil
 function axis.faction.Get(id)
-    return prop.faction.stored[id]
+    return axis.faction.stored[id]
 end
 
 ---comment
 ---@return table
 function axis.faction.GetAll()
-    return prop.faction.stored
+    return axis.faction.stored
 end

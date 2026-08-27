@@ -12,6 +12,7 @@ function axis.team.Register(id, data)
     data.index = teamIndex
 
     axis.team.stored[id] = data
+    axis.team.numericMap[data.index] = id
     local color = data.color or Color(150, 150, 150)
     team.SetUp(data.index, data.name or "Unknown Team", color)
 
