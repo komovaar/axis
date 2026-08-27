@@ -1,8 +1,8 @@
 {
     "Lua.runtime.version": "LuaJIT",
     "Lua.runtime.special": {
-        "include": "require",
-        "IncludeCS": "require"
+        "include": "dofile",
+        "IncludeCS": "dofile"
     },
     "Lua.runtime.nonstandardSymbol": [
         "continue",
@@ -10,10 +10,16 @@
         "||",
         "!=",
         "!",
-        "//"
+        "//",
+        "/**/"
     ],
     "Lua.diagnostics.disable": [
         "undefined-global",
-        "lowercase-global"
+        "lowercase-global",
+        "duplicate-set-field"
     ],
+    "Lua.workspace.library": [
+        "${addons}/garrysmod/module/library"
+    ],
+    "Lua.workspace.checkThirdParty": false,
 }
