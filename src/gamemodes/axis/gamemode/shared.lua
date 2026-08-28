@@ -14,29 +14,34 @@ function axis.Include(path)
     local filename = string.match(path, "[^/]+$") or path
     local prefix = string.sub(filename, 1, 3)
 
+    -- factions/ and other content files without prefix are treated as shared
+    local isShared = prefix == "sh_"
+    local isServer = prefix == "sv_"
+    local isClient = prefix == "cl_"
+    local noPrefix = not isShared and not isServer and not isClient
+
     if SERVER then
-        if prefix == "sv_" then
+        if isServer then
             include(path)
-        elseif  prefix == "cl_" then
+        elseif isClient then
             AddCSLuaFile(path)
-        elseif prefix == "sh_" then
+        elseif isShared or noPrefix then
             AddCSLuaFile(path)
             include(path)
         end
         print(path .. " loaded")
     else -- CLIENT
-        if prefix == "cl_" or prefix == "sh_" then
+        if isShared or isClient or noPrefix then
             include(path)
             print(path .. " loaded")
-
         end
     end
 end
 
 ---@param dir string
 function axis.IncludeDir(dir)
-    local serachPath = "axis/gamemode/" .. dir
-    local files, folders = file.Find(serachPath .. "/*", "LUA")
+    local searchPath = "axis/gamemode/" .. dir
+    local files, folders = file.Find(searchPath .. "/*", "LUA")
 
     for _, f in ipairs(files) do
         if string.sub(f, -4) == ".lua" then
@@ -48,18 +53,3 @@ function axis.IncludeDir(dir)
         axis.IncludeDir(dir .. "/" .. folder)
     end
 end
-
-axis.faction.Register("police", {
-    name = "Police Department",
-    desc = "Law enforcement.",
-})
-
-axis.team.Register("detective", {
-    name = "Detective",
-    faction = "police",
-    model = "models/player/dod_german.mdl",
-    color = Color(50, 50, 150),
-    OnJoin = function(self, ply)
-        ply:ChatPrint("You are now a Detective. Check the evidence locker.")
-    end
-})
