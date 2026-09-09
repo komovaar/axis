@@ -1,0 +1,9 @@
+# Binary modules are downloaded per-platform, not vendored - see src/bin/README.md
+src/bin/*.dll
+src/bin/*.so
+
+# Windows download markers
+*:Zone.Identifier
+
+# Local credentials
+.env
