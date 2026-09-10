@@ -190,9 +190,12 @@ function axis.char.OpenMenu()
     frame:Rebuild()
 end
 
+--- No faction picker: the server puts every new character in
+--- axis.config.defaultFaction. The label below is display only, so a client
+--- editing it changes nothing.
 function axis.char.OpenCreateMenu()
     local frame = vgui.Create("DFrame")
-    frame:SetSize(360, 200)
+    frame:SetSize(360, 170)
     frame:Center()
     frame:SetTitle("Create a character")
     frame:MakePopup()
@@ -203,28 +206,18 @@ function axis.char.OpenCreateMenu()
     name:SetTall(28)
     name:SetPlaceholderText("Character name")
 
-    local factions = frame:Add("DComboBox")
-    factions:Dock(TOP)
-    factions:DockMargin(8, 4, 8, 8)
-    factions:SetTall(28)
+    local faction = axis.faction.Get(axis.config.defaultFaction)
 
-    for id, faction in SortedPairs(axis.faction.GetAll()) do
-        if faction.isJoinable ~= false then
-            factions:AddChoice(faction.name, id, factions:GetOptionData(1) == nil)
-        end
-    end
+    local blurb = frame:Add("DLabel")
+    blurb:Dock(TOP)
+    blurb:DockMargin(8, 4, 8, 8)
+    blurb:SetTall(20)
+    blurb:SetTextColor(axis.config.color.info)
+    blurb:SetText(faction and ("You will enlist in the " .. faction.name .. ".") or "")
 
     local confirm = StyledButton(frame, "Create", Color(45, 95, 150), function()
-        local _, factionID = factions:GetSelected()
-
-        if not factionID then
-            notification.AddLegacy("Pick a faction.", NOTIFY_ERROR, 4)
-            return
-        end
-
         net.Start("axisCharCreate")
             net.WriteString(name:GetValue())
-            net.WriteString(factionID)
         net.SendToServer()
 
         frame:Remove()

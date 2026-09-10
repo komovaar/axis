@@ -105,6 +105,16 @@ function axis.Validate()
         problems[#problems + 1] = string.format(fmt, ...)
     end
 
+    local defaultFaction = axis.config.defaultFaction
+
+    if not defaultFaction then
+        fail("axis.config.defaultFaction is not set")
+    elseif not axis.faction.Get(defaultFaction) then
+        fail("axis.config.defaultFaction '%s' does not exist", defaultFaction)
+    elseif axis.faction.Get(defaultFaction).isJoinable == false then
+        fail("axis.config.defaultFaction '%s' is not joinable", defaultFaction)
+    end
+
     for id, faction in pairs(axis.faction.GetAll()) do
         local class = faction.defaultClass and axis.class.Get(faction.defaultClass)
 

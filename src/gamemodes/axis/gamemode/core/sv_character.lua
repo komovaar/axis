@@ -182,20 +182,22 @@ function axis.char.ValidateName(name)
     return true
 end
 
+--- Every character starts in axis.config.defaultFaction with that faction's
+--- default class and rank. The faction is deliberately not client input: the
+--- creation menu offers no choice, and staff reassign afterwards with
+--- /setfaction. axis.Validate checks the configured faction exists at boot.
 ---@param ply Player
 ---@param name string
----@param factionID string
 ---@param callback fun(char: table?, err: string?)?
-function axis.char.Create(ply, name, factionID, callback)
+function axis.char.Create(ply, name, callback)
+    local factionID = axis.config.defaultFaction
     local faction = axis.faction.Get(factionID)
 
     if not faction then
-        if callback then callback(nil, "That faction does not exist.") end
-        return
-    end
+        if callback then
+            callback(nil, "The default faction is misconfigured - tell an administrator.")
+        end
 
-    if faction.isJoinable == false then
-        if callback then callback(nil, "That faction is not joinable.") end
         return
     end
 
@@ -285,9 +287,8 @@ end)
 
 net.Receive("axisCharCreate", function(_, ply)
     local name = net.ReadString()
-    local factionID = net.ReadString()
 
-    axis.char.Create(ply, name, factionID, function(char, err)
+    axis.char.Create(ply, name, function(char, err)
         if not IsValid(ply) then return end
 
         if not char then

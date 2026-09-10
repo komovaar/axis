@@ -66,6 +66,11 @@ if SERVER then
     end
 end
 
+--- Faction every new character is created into. Players do not choose a faction
+--- at creation; staff move them afterwards with /setfaction. Validated at boot
+--- by axis.Validate, which also checks it is joinable.
+axis.config.defaultFaction = "republic"
+
 --- Maximum characters a single SteamID may own.
 axis.config.maxCharacters = 5
 
