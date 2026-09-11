@@ -1,15 +1,46 @@
 services:
+  mariadb:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: ${AXIS_DB_ROOT_PASSWORD:-changeme-root}
+      MARIADB_DATABASE: ${AXIS_DB_NAME:-axis}
+      MARIADB_USER: ${AXIS_DB_USER:-axis}
+      MARIADB_PASSWORD: ${AXIS_DB_PASSWORD:-changeme}
+    volumes:
+      - mariadb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
   server:
     build: .
+    depends_on:
+      mariadb:
+        condition: service_healthy
     ports:
       - "27015:27015/tcp"
       - "27015:27015/udp"
       - "27005:27005/udp"
     volumes:
       - ./src/addons:/home/steam/server/garrysmod/addons
+      - ./src/bin:/home/steam/server/garrysmod/lua/bin
       - ./src/gamemodes/axis:/home/steam/server/garrysmod/gamemodes/axis
     stdin_open: true
     tty: true
+    # The entrypoint turns these into garrysmod/data/axis/db.json before srcds
+    # starts; see docker/entrypoint.sh for why they cannot be convars.
+    environment:
+      AXIS_DB_HOST: mariadb
+      AXIS_DB_PORT: 3306
+      AXIS_DB_NAME: ${AXIS_DB_NAME:-axis}
+      AXIS_DB_USER: ${AXIS_DB_USER:-axis}
+      AXIS_DB_PASSWORD: ${AXIS_DB_PASSWORD:-changeme}
     command: >
       ./srcds_run_x64 -game garrysmod -norestart +ip 0.0.0.0 +maxplayers 16 +map gm_construct +gamemode axis
     restart: unless-stopped
+
+volumes:
+  mariadb:
